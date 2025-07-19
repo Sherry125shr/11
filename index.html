@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星票通 - 安全专业的票务交易平台</title>
+    <style>
+        :root {
+            --primary-color: #7b2cbf;
+            --secondary-color: #9d4edd;
+            --accent-color: #e0aaff;
+            --text-color: #333;
+            --light-text: #fff;
+            --bg-color: #f8f9fa;
+            --card-bg: #fff;
+            --error-color: #d62828;
+            --success-color: #2a9d8f;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+        
+        nav ul li a:hover {
+            opacity: 0.9;
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-actions .btn {
+            margin-left: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login {
+            color: var(--light-text);
+            border: 1px solid var(--light-text);
+        }
+        
+        .btn-register {
+            background-color: var(--light-text);
+            color: var(--primary-color);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .banner {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-text);
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary-color), transparent);
+            opacity: 0.3;
+            z-index: 1;
+        }
+        
+        .banner-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 1rem;
+        }
+        
+        .banner-content h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease;
+        }
+        
+        .banner-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.2s forwards;
+            opacity: 0;
+        }
+        
+        .search-bar {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease 0.4s forwards;
+            opacity: 0;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 0.9rem 1.2rem;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .search-bar button {
+            padding: 0 1.8rem;
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .search-bar button:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .categories {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 3rem 0;
+            gap: 1.5rem;
+        }
+        
+        .category {
+            background-color: var(--card-bg);
+            padding: 1.8rem 1.5rem;
+            border-radius: 12px;
+            width: calc(25% - 1.5rem);
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: var(--secondary-color);
+        }
+        
+        .category i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .category:hover i {
+            transform: scale(1.1);
+        }
+        
+        .category h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .category p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .products-section {
+            margin: 3rem 0;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin: 2rem 0 1.5rem;
+            color: var(--primary-color);
+            position: relative;
+            padding-left: 1rem;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+        
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .product {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .product:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            z-index: 2;
+        }
+        
+        .product-img {
+            height: 200px;
+            background-color: #eee;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            transition: transform 0.5s ease;
+        }
+        
+        .product:hover .product-img {
+            transform: scale(1.05);
+        }
+        
+        .product-img::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .product-price {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .product-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .product-date, .product-location {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .product-date i, .product-location i {
+            margin-right: 0.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .contact-seller {
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        
+        .contact-seller:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .chat-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            font-size: 1.5rem;
+            z-index: 99;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-button:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary-color);
+        }
+        
+        footer {
+            background-color: #2b2d42;
+            color: var(--light-text);
+            padding: 3rem 0 0;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--accent-color);
+        }
+        
+        .footer-section p, .footer-section ul li {
+            margin-bottom: 1rem;
+            color: #adb5bd;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-section ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-section ul li a i {
+            margin-right: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.1);
+            color: var(--light-text);
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding: 1.5rem 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 2rem;
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 5% auto;
+            padding: 2.5rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            animation: slideIn 0.4s ease;
+        }
+        
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close:hover {
+            color: var(--primary-color);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.2);
+            outline: none;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        .input-with-icon input {
+            padding-left: 3rem;
+        }
+        
+        .form-footer {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .form-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .sms-code {
+            display: flex;
+            gap: 0.8rem;
+        }
+        
+        .sms-code input {
+            flex: 1;
+        }
+        
+        .sms-code .btn-sms {
+            padding: 0.8rem;
+            background-color: #f0f0f0;
+            color: var(--primary-color);
+            border: 1px solid #ddd;
+            white-space: nowrap;
+        }
+        
+        .sms-code .btn-sms:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .sms-code .btn-sms.disabled {
+            background-color: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        /* 聊天窗口样式 */
+        .chat-modal .modal-content {
+            max-width: 600px;
+            padding: 0;
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            padding: 1.5rem;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .chat-header h2 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .chat-header h2 i {
+            margin-right: 0.5rem;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+        
+        .message {
+            margin-bottom: 1rem;
+            max-width: 80%;
+            clear: both;
+        }
+        
+        .message-user {
+            float: right;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border-radius: 18px 18px 0 18px;
+            padding: 0.8rem 1.2rem;
+            margin-left: auto;
+        }
+        
+        .message-seller {
+            float: left;
+            background-color: #e9ecef;
+            color: var(--text-color);
+            border-radius: 18px 18px 18px 0;
+            padding: 0.8rem 1.2rem;
+            margin-right: auto;
+        }
+        
+        .message-system {
+            margin: 1rem auto;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .chat-input {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+            background-color: var(--card-bg);
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .chat-input-group {
+            display: flex;
+            gap: 0.8rem;
+        }
+        
+        .chat-input-group input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .chat-input-group button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .category {
+                width: calc(50% - 1rem);
+            }
+            
+            .products {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            
+            .user-actions {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            
+            .banner-content h1 {
+                font-size: 2.2rem;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .category {
+                width: 100%;
+            }
+            
+            .products {
+                grid-template-columns: 1fr;
+            }
+            
+            .banner-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .search-bar input {
+                border-radius: 4px;
+                margin-bottom: 0.5rem;
+            }
+            
+            .search-bar button {
+                border-radius: 4px;
+                padding: 0.8rem;
+            }
+            
+            .sms-code {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-ticket-alt"></i>
+                <span>星票通</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">首页</a></li>
+                    <li><a href="#">演唱会</a></li>
+                    <li><a href="#">体育赛事</a></li>
+                    <li><a href="#">话剧歌剧</a></li>
+                    <li><a href="#">交易保障</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="#" class="btn btn-login" id="loginBtn">登录</a>
+                <a href="#" class="btn btn-register" id="registerBtn">注册</a>
+            </div>
+        </div>
+    </header>
+    
+    <section class="banner">
+        <div class="banner-content">
+            <h1>2025夏季热门演唱会票务</h1>
+            <p>真实票源 · 平台担保 · 安全交易</p>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索艺人、城市、场馆...">
+                <button><i class="fas fa-search"></i> 搜索</button>
+            </div>
+        </div>
+    </section>
+    
+    <main class="container">
+        <h2 class="section-title">热门票务分类</h2>
+        <div class="categories">
+            <div class="category" onclick="location.href='#'">
+                <i class="fas fa-music"></i>
+                <h3>流行演唱会</h3>
+                <p>华语流行、欧美流行</p>
+            </div>
+            <div class="category" onclick="location.href='#'">
+                <i class="fas fa-guitar"></i>
+                <h3>摇滚音乐节</h3>
+                <p>摇滚、金属、独立</p>
+            </div>
+            <div class="category" onclick="location.href='#'">
+                <i class="fas fa-route"></i>
+                <h3>巡回演唱会</h3>
+                <p>全球巡演、亚洲巡演</p>
+            </div>
+            <div class="category" onclick="location.href='#'">
+                <i class="fas fa-star"></i>
+                <h3>偶像团体</h3>
+                <p>K-pop、男团、女团</p>
+            </div>
+        </div>
+        
+        <div class="products-section">
+            <h2 class="section-title">2025八月热门演唱会</h2>
+            <div class="products">
+                <div class="product">
+                    <div class="product-badge">热卖中</div>
+                    <div class="product-img" style="background-image: url('https://images.unsplash.com/photo-1464375117522-1311d6a5b81f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-info">
+                        <h4 class="product-title">周杰伦2025嘉年华世界巡回演唱会</h4>
+                        <div class="product-price">¥880-¥2580</div>
+                        <div class="product-meta">
+                            <div class="product-date">
+                                <i class="far fa-calendar-alt"></i>
+                                2025.08.15 周六 19:30
+                            </div>
+                            <div class="product-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                北京国家体育场 · 北京
+                            </div>
+                        </div>
+                        <a class="contact-seller" onclick="openSellerChat('周杰伦2025嘉年华世界巡回演唱会')">
+                            <i class="fas fa-comment-dots"></i> 联系卖家
+                        </a>
+                    </div>
+                </div>
+                <div class="product">
+                    <div class="product-badge">少量余票</div>
+                    <div class="product-img" style="background-image: url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-info">
+                        <h4 class="product-title">林俊杰JJ20世界巡回演唱会</h4>
+                        <div class="product-price">¥780-¥2280</div>
+                        <div class="product-meta">
+                            <div class="product-date">
+                                <i class="far fa-calendar-alt"></i>
+                                2025.08.22 周六 20:00
+                            </div>
+                            <div class="product-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                上海梅赛德斯中心 · 上海
+                            </div>
+                        </div>
+                        <a class="contact-seller" onclick="openSellerChat('林俊杰JJ20世界巡回演唱会')">
+                            <i class="fas fa-comment-dots"></i> 联系卖家
+                        </a>
+                    </div>
+                </div>
+                <div class="product">
+                    <div class="product-badge">预售中</div>
+                    <div class="product-img" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-info">
+                        <h4 class="product-title">BLACKPINK BORN PINK世界巡回演唱会</h4>
+                        <div class="product-price">¥980-¥2980</div>
+                        <div class="product-meta">
+                            <div class="product-date">
+                                <i class="far fa-calendar-alt"></i>
+                                2025.08.08 周五 19:00
+                            </div>
+                            <div class="product-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                广州天河体育场 · 广州
+                            </div>
+                        </div>
+                        <a class="contact-seller" onclick="openSellerChat('BLACKPINK BORN PINK世界巡回演唱会')">
+                            <i class="fas fa-comment-dots"></i> 联系卖家
+                        </a>
+                    </div>
+                </div>
+                <div class="product">
+                    <div class="product-badge">即将开售</div>
+                    <div class="product-img" style="background-image: url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-info">
+                        <h4 class="product-title">五月天2025诺亚方舟复刻版演唱会</h4>
+                        <div class="product-price">¥680-¥1880</div>
+                        <div class="product-meta">
+                            <div class="product-date">
+                                <i class="far fa-calendar-alt"></i>
+                                2025.08.30 周日 19:30
+                            </div>
+                            <div class="product-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                深圳大运中心 · 深圳
+                            </div>
+                        </div>
+                        <a class="contact-seller" onclick="openSellerChat('五月天2025诺亚方舟复刻版演唱会')">
+                            <i class="fas fa-comment-dots"></i> 联系卖家
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="products-section">
+            <h2 class="section-title">2025九月热门演唱会</h2>
+            <div class="products">
+                <div class="product">
+                    <div class="product-badge">热卖中</div>
+                    <div class="product-img" style="background-image: url('https://images.unsplash.com/photo-1501612780327-45045538702b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-info">
+                        <h4 class="product-title">Taylor Swift The Eras Tour</h4>
+                        <div class="product-price">¥1280-¥3580</div>
+                        <div class="product-meta">
+                            <div class="product-date">
+                                <i class="far fa-calendar-alt"></i>
+                                2025.09.12 周五 20:00
+                            </div>
+                            <div class="product-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                东京巨蛋 · 东京
+                            </div>
+                        </div>
+                        <a class="contact-seller" onclick="openSellerChat('Taylor Swift The Eras Tour')">
+                            <i class="fas fa-comment-dots"></i> 联系卖家
+                        </a>
+                    </div>
+                </div>
+                <div class="product">
+                    <div class="product-badge">少量余票</div>
+                    <div class="product-img" style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-info">
+                        <h4 class="product-title">陈奕迅FEAR AND DREAMS演唱会</h4>
+                        <div class="product-price">¥980-¥2880</div>
+                        <div class="product-meta">
+                            <div class="product-date">
+                                <i class="far fa-calendar-alt"></i>
+                                2025.09.05 周六 19:30
+                            </div>
+                            <div class="product-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                香港红磡体育馆 · 香港
+                            </div>
+                        </div>
+                        <a class="contact-seller" onclick="openSellerChat('陈奕迅FEAR AND DREAMS演唱会')">
+                            <i class="fas fa-comment-dots"></i> 联系卖家
+                        </a>
+                    </div>
+                </div>
+                <div class="product">
+                    <div class="product-badge">预售中</div>
+                    <div class="product-img" style="background-image: url('https://images.unsplash.com/photo-1496293455970-f8581aae0e3b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-info">
+                        <h4 class="product-title">张惠妹ASMR世界巡回演唱会</h4>
+                        <div class="product-price">¥880-¥2580</div>
+                        <div class="product-meta">
+                            <div class="product-date">
+                                <i class="far fa-calendar-alt"></i>
+                                2025.09.20 周六 20:00
+                            </div>
+                            <div class="product-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                台北小巨蛋 · 台北
+                            </div>
+                        </div>
+                        <a class="contact-seller" onclick="openSellerChat('张惠妹ASMR世界巡回演唱会')">
+                            <i class="fas fa-comment-dots"></i> 联系卖家
+                        </a>
+                    </div>
+                </div>
+                <div class="product">
+                    <div class="product-badge">即将开售</div>
+                    <div class="product-img" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-info">
+                        <h4 class="product-title">蔡徐坤2025个人巡回演唱会</h4>
+                        <div class="product-price">¥680-¥1980</div>
+                        <div class="product-meta">
+                            <div class="product-date">
+                                <i class="far fa-calendar-alt"></i>
+                                2025.09.27 周六 19:30
+                            </div>
+                            <div class="product-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                成都凤凰山体育场 · 成都
+                            </div>
+                        </div>
+                        <a class="contact-seller" onclick="openSellerChat('蔡徐坤2025个人巡回演唱会')">
+                            <i class="fas fa-comment-dots"></i> 联系卖家
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div class="chat-button" id="chatBtn">
+        <i class="fas fa-comments"></i>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于星票通</h3>
+                    <p>星票通是专业的票务交易平台，致力于为买家和卖家提供安全、便捷的票务交易服务。</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-weixin"></i></a>
+                        <a href="#"><i class="fab fa-weibo"></i></a>
+                        <a href="#"><i class="fab fa-qq"></i></a>
+                        <a href="#"><i class="fab fa-douyin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>交易保障</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-shield-alt"></i> 平台担保交易</a></li>
+                        <li><a href="#"><i class="fas fa-check-circle"></i> 验票服务</a></li>
+                        <li><a href="#"><i class="fas fa-user-check"></i> 卖家认证</a></li>
+                        <li><a href="#"><i class="fas fa-undo"></i> 退款保障</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>帮助中心</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-shopping-cart"></i> 如何购买</a></li>
+                        <li><a href="#"><i class="fas fa-store"></i> 如何出售</a></li>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> 常见问题</a></li>
+                        <li><a href="#"><i class="fas fa-file-alt"></i> 交易规则</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-phone"></i> 客服热线: 400-123-4567</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> 邮箱: service@xingpiaotong.com</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> 地址: 上海市浦东新区张江高科技园区</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 星票通 版权所有 | 沪ICP备12345678号</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- 注册模态框 -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="modal-title">
+                <i class="fas fa-user-plus"></i> 用户注册
+            </h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">真实姓名</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="registerName" class="form-control" placeholder="请输入您的真实姓名" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerIdCard">身份证号</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" id="registerIdCard" class="form-control" placeholder="请输入18位身份证号码" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerBankCard">银行卡号</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-credit-card"></i>
+                        <input type="text" id="registerBankCard" class="form-control" placeholder="请输入银行卡号" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPhone">手机号码</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                        <input type="tel" id="registerPhone" class="form-control" placeholder="请输入11位手机号码" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerSmsCode">短信验证码</label>
+                    <div class="sms-code">
+                        <div class="input-with-icon" style="flex: 1;">
+                            <i class="fas fa-sms"></i>
+                            <input type="text" id="registerSmsCode" class="form-control" placeholder="请输入6位验证码" required>
+                        </div>
+                        <button type="button" id="sendSmsBtn" class="btn btn-sms">获取验证码</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPassword">设置密码</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="registerPassword" class="form-control" placeholder="请输入6-20位密码" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerConfirmPassword">确认密码</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="registerConfirmPassword" class="form-control" placeholder="请再次输入密码" required>
+                    </div>
+                </div>
+                
+                <div class="form-group form-footer">
+                    <button type="submit" class="btn">立即注册</button>
+                    <p>已有账号？<a href="#" id="switchToLogin">立即登录</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 登录模态框 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="modal-title">
+                <i class="fas fa-sign-in-alt"></i> 用户登录
+            </h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginPhone">手机号码</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                        <input type="tel" id="loginPhone" class="form-control" placeholder="请输入11位手机号码" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">密码</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="请输入密码" required>
+                    </div>
+                </div>
+                
+                <div class="form-group form-footer">
+                    <button type="submit" class="btn">立即登录</button>
+                    <p>没有账号？<a href="#" id="switchToRegister">立即注册</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 客服聊天模态框 -->
+    <div id="platformChatModal" class="modal chat-modal">
+        <div class="modal-content">
+            <div class="chat-header">
+                <h2><i class="fas fa-headset"></i> 平台客服</h2>
+            </div>
+            <div class="chat-messages" id="platformChatMessages">
+                <div class="message message-system">
+                    您已连接平台客服，请问有什么可以帮您的？
+                </div>
+            </div>
+            <div class="chat-input">
+                <div class="chat-input-group">
+                    <input type="text" id="platformChatInput" placeholder="请输入您的问题...">
+                    <button id="sendPlatformMessage"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 卖家聊天模态框 -->
+    <div id="sellerChatModal" class="modal chat-modal">
+        <div class="modal-content">
+            <div class="chat-header">
+                <h2><i class="fas fa-user-tie"></i> <span id="sellerChatTitle">联系卖家</span></h2>
+            </div>
+            <div class="chat-messages" id="sellerChatMessages">
+                <div class="message message-system">
+                    您已连接到卖家，请开始咨询
+                </div>
+                <div class="message message-seller">
+                    您好，请问您想了解什么信息？
+                </div>
+            </div>
+            <div class="chat-input">
+                <div class="chat-input-group">
+                    <input type="text" id="sellerChatInput" placeholder="请输入您的消息...">
+                    <button id="sendSellerMessage"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // DOM元素
+        const registerModal = document.getElementById('registerModal');
+        const loginModal = document.getElementById('loginModal');
+        const platformChatModal = document.getElementById('platformChatModal');
+        const sellerChatModal = document.getElementById('sellerChatModal');
+        
+        const registerBtn = document.getElementById('registerBtn');
+        const loginBtn = document.getElementById('loginBtn');
+        const chatBtn = document.getElementById('chatBtn');
+        
+        const switchToLogin = document.getElementById('switchToLogin');
+        const switchToRegister = document.getElementById('switchToRegister');
+        
+        const sendSmsBtn = document.getElementById('sendSmsBtn');
+        
+        // 卖家回复库
+        const sellerResponses = {
+            "周杰伦2025嘉年华世界巡回演唱会": [
+                "您好，周杰伦演唱会的票目前还有内场A区和看台区的票。",
+                "内场A区价格是2580元，看台区价格从880元到1580元不等。",
+                "是的，我们可以提供电子票或纸质票，您可以根据需要选择。",
+                "交易可以通过平台担保，您付款后我会立即发货，平台会在您确认收到票后放款给我。",
+                "如果您有任何其他问题，随时告诉我。"
+            ],
+            "林俊杰JJ20世界巡回演唱会": [
+                "您好，林俊杰演唱会的票目前还有少量余票。",
+                "最便宜的是看台区780元，内场区价格从1280元到2280元不等。",
+                "是的，所有票都是官方渠道获得，保证真实有效。",
+                "我可以提供票面照片和购买凭证供您核实。",
+                "如果您确定要购买，我可以为您保留座位。"
+            ],
+            "BLACKPINK BORN PINK世界巡回演唱会": [
+                "您好，BLACKPINK演唱会的票目前正在预售中。",
+                "预售价格从980元到2980元不等，具体价格取决于座位区域。",
+                "预售票将在演出前一个月统一发货。",
+                "我们支持验票服务，确保票品真实有效。",
+                "如果您需要多张连座票，请告诉我具体数量。"
+            ],
+            "五月天2025诺亚方舟复刻版演唱会": [
+                "您好，五月天演唱会的票即将开售。",
+                "价格区间是680元到1880元，具体开售时间请关注官方通知。",
+                "我可以为您预约购票，开售后第一时间通知您。",
+                "预约不需要支付定金，确定有票后再付款。",
+                "如果您有其他需求，随时告诉我。"
+            ],
+            "Taylor Swift The Eras Tour": [
+                "您好，Taylor Swift东京场的票目前很热门。",
+                "价格从1280元到3580元不等，内场VIP票包含周边礼包。",
+                "是的，我们可以提供购票凭证和物流跟踪信息。",
+                "国际票需要提前安排邮寄，建议尽早购买。",
+                "如果您需要接送机或其他服务，我们也可以安排。"
+            ],
+            "陈奕迅FEAR AND DREAMS演唱会": [
+                "您好，陈奕迅香港场的票还有少量余票。",
+                "价格区间是980元到2880元，红磡体育馆的音响效果非常好。",
+                "香港场次的门票是电子票，购买后直接发送到您邮箱。",
+                "我们可以提供香港当地的酒店和交通建议。",
+                "如果您需要多张票，我可以为您争取优惠。"
+            ],
+            "张惠妹ASMR世界巡回演唱会": [
+                "您好，张惠妹台北场的票正在预售中。",
+                "预售价格从880元到2580元不等，小巨蛋的视听效果很棒。",
+                "预售票将在演出前两周统一发放电子票。",
+                "我们可以提供台北当地的旅游建议和美食推荐。",
+                "如果您需要团体票，请告诉我具体人数。"
+            ],
+            "蔡徐坤2025个人巡回演唱会": [
+                "您好，蔡徐坤成都场的票即将开售。",
+                "价格区间是680元到1980元，凤凰山体育场是新建的现代化场馆。",
+                "我可以为您预约购票，开售后第一时间通知您。",
+                "成都场次的门票将以电子票形式发放。",
+                "如果您是粉丝会成员，可能有专属购票通道。"
+            ]
+        };
+        
+        // 平台客服回复库
+        const platformResponses = [
+            "您好，请问有什么可以帮您的？",
+            "我们的平台提供100%的交易担保，确保您的资金安全。",
+            "如果您遇到任何问题，可以随时联系我们的客服热线400-123-4567。",
+            "所有卖家都经过实名认证，确保票源真实可靠。",
+            "我们支持多种支付方式，包括支付宝、微信支付和银行卡支付。",
+            "如果交易出现问题，我们提供全额退款保障。",
+            "感谢您的咨询，祝您购票愉快！"
+        ];
+        
+        // 当前聊天上下文
+        let currentChatContext = {
+            concert: "",
+            questionCount: 0
+        };
+        
+        // 打开注册模态框
+        registerBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginModal.style.display = 'none';
+            registerModal.style.display = 'block';
+        });
+        
+        // 打开登录模态框
+        loginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerModal.style.display = 'none';
+            loginModal.style.display = 'block';
+        });
+        
+        // 打开平台客服模态框
+        chatBtn.addEventListener('click', () => {
+            platformChatModal.style.display = 'block';
+        });
+        
+        // 打开卖家聊天模态框
+        function openSellerChat(concertName) {
+            currentChatContext = {
+                concert: concertName,
+                questionCount: 0
+            };
+            
+            document.getElementById('sellerChatTitle').textContent = `联系卖家 - ${concertName}`;
+            
+            // 清空之前的聊天记录，只保留初始消息
+            const sellerChatMessages = document.getElementById('sellerChatMessages');
+            sellerChatMessages.innerHTML = `
+                <div class="message message-system">
+                    您正在咨询 ${concertName} 的票务信息
+                </div>
+                <div class="message message-seller">
+                    您好，请问您想了解什么信息？
+                </div>
+            `;
+            
+            sellerChatModal.style.display = 'block';
+        }
+        
+        // 关闭模态框
+        const closeButtons = document.querySelectorAll('.close');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                registerModal.style.display = 'none';
+                loginModal.style.display = 'none';
+                platformChatModal.style.display = 'none';
+                sellerChatModal.style.display = 'none';
+            });
+        });
+        
+        // 点击模态框外部关闭
+        window.addEventListener('click', (e) => {
+            if (e.target === registerModal) registerModal.style.display = 'none';
+            if (e.target === loginModal) loginModal.style.display = 'none';
+            if (e.target === platformChatModal) platformChatModal.style.display = 'none';
+            if (e.target === sellerChatModal) sellerChatModal.style.display = 'none';
+        });
+        
+        // 切换登录注册
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerModal.style.display = 'none';
+            loginModal.style.display = 'block';
+        });
+        
+        switchToRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginModal.style.display = 'none';
+            registerModal.style.display = 'block';
+        });
+        
+        // 发送短信验证码
+        sendSmsBtn.addEventListener('click', () => {
+            const phone = document.getElementById('registerPhone').value;
+            
+            if (!phone || !/^1[3-9]\d{9}$/.test(phone)) {
+                alert('请输入正确的手机号码');
+                return;
+            }
+            
+            // 模拟发送短信验证码
+            sendSmsBtn.disabled = true;
+            sendSmsBtn.classList.add('disabled');
+            sendSmsBtn.textContent = '60秒后重试';
+            
+            let countdown = 60;
+            const timer = setInterval(() => {
+                countdown--;
+                sendSmsBtn.textContent = `${countdown}秒后重试`;
+                
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    sendSmsBtn.disabled = false;
+                    sendSmsBtn.classList.remove('disabled');
+                    sendSmsBtn.textContent = '获取验证码';
+                }
+            }, 1000);
+            
+            alert(`验证码已发送至手机尾号${phone.slice(-4)}，请注意查收（演示用途：123456）`);
+        });
+        
+        // 注册表单提交
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const idCard = document.getElementById('registerIdCard').value;
+            const bankCard = document.getElementById('registerBankCard').value;
+            const phone = document.getElementById('registerPhone').value;
+            const smsCode = document.getElementById('registerSmsCode').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            // 简单验证
+            if (!name || name.length < 2) {
+                alert('请输入有效的真实姓名');
+                return;
+            }
+            
+            if (!idCard || !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(idCard)) {
+                alert('请输入有效的身份证号码');
+                return;
+            }
+            
+            if (!bankCard || !/^\d{16,19}$/.test(bankCard)) {
+                alert('请输入有效的银行卡号');
+                return;
+            }
+            
+            if (!phone || !/^1[3-9]\d{9}$/.test(phone)) {
+                alert('请输入有效的手机号码');
+                return;
+            }
+            
+            if (!smsCode || smsCode !== '123456') {
+                alert('请输入正确的短信验证码');
+                return;
+            }
+            
+            if (!password || password.length < 6) {
+                alert('密码长度不能少于6位');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+            
+            // 模拟注册成功
+            alert(`注册成功！欢迎 ${name}`);
+            registerModal.style.display = 'none';
+        });
+        
+        // 登录表单提交
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const phone = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!phone || !/^1[3-9]\d{9}$/.test(phone)) {
+                alert('请输入有效的手机号码');
+                return;
+            }
+            
+            if (!password || password.length < 6) {
+                alert('密码长度不能少于6位');
+                return;
+            }
+            
+            // 模拟登录成功
+            alert('登录成功！');
+            loginModal.style.display = 'none';
+        });
+        
+        // 发送平台客服消息
+        document.getElementById('sendPlatformMessage').addEventListener('click', sendPlatformMessage);
+        document.getElementById('platformChatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendPlatformMessage();
+        });
+        
+        function sendPlatformMessage() {
+            const input = document.getElementById('platformChatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const chatMessages = document.getElementById('platformChatMessages');
+            
+            // 添加用户消息
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message message-user';
+            userMessage.textContent = message;
+            chatMessages.appendChild(userMessage);
+            
+            // 清空输入框
+            input.value = '';
+            
+            // 模拟客服回复
+            setTimeout(() => {
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message message-seller';
+                
+                // 随机选择回复
+                const randomIndex = Math.floor(Math.random() * platformResponses.length);
+                botMessage.textContent = platformResponses[randomIndex];
+                
+                chatMessages.appendChild(botMessage);
+                
+                // 滚动到底部
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+            
+            // 滚动到底部
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // 发送卖家消息
+        document.getElementById('sendSellerMessage').addEventListener('click', sendSellerMessage);
+        document.getElementById('sellerChatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendSellerMessage();
+        });
+        
+        function sendSellerMessage() {
+            const input = document.getElementById('sellerChatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const chatMessages = document.getElementById('sellerChatMessages');
+            
+            // 添加用户消息
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message message-user';
+            userMessage.textContent = message;
+            chatMessages.appendChild(userMessage);
+            
+            // 清空输入框
+            input.value = '';
+            
+            // 模拟卖家回复
+            setTimeout(() => {
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message message-seller';
+                
+                // 根据上下文获取回复
+                const responses = sellerResponses[currentChatContext.concert] || [];
+                const responseIndex = currentChatContext.questionCount % responses.length;
+                botMessage.textContent = responses[responseIndex] || "感谢您的咨询，请问还有其他问题吗？";
+                
+                chatMessages.appendChild(botMessage);
+                currentChatContext.questionCount++;
+                
+                // 滚动到底部
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1500);
+            
+            // 滚动到底部
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // 页面加载动画
+        document.addEventListener('DOMContentLoaded', () => {
+            // 模拟页面加载效果
+            setTimeout(() => {
+                document.querySelector('.banner-content h1').style.opacity = '1';
+                document.querySelector('.banner-content p').style.opacity = '1';
+                document.querySelector('.search-bar').style.opacity = '1';
+            }, 300);
+        });
+    </script>
+</body>
+</html>
